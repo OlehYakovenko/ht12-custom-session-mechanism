@@ -7,7 +7,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-import javax.print.attribute.standard.MediaSize;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -17,7 +16,7 @@ public class HelloServlet extends HttpServlet {
     private static final String HELLO = "Hello";
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         var writer = new PrintWriter(resp.getOutputStream());
         writer.println(getMessage(req));
         writer.flush();
