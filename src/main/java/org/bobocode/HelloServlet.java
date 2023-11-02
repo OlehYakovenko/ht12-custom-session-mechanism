@@ -9,7 +9,7 @@ import java.util.Arrays;
 
 @WebServlet(value = "/hello")
 public class HelloServlet extends HttpServlet {
-    private CustomSession session = new CustomSession();
+    private final CustomSession session = new CustomSession();
     private static final String NAME = "name";
     private static final String HELLO = "Hello";
 
