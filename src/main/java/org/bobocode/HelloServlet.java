@@ -15,23 +15,24 @@ public class HelloServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+
         var writer = new PrintWriter(resp.getOutputStream());
         writer.println(getMessage(req));
         writer.flush();
     }
 
-    private String getMessage(HttpServletRequest request) {
-        if (request.getParameter(NAME) == null && session.getAttribute(request) != null) {
-            return getMessageFormatted(session, request);
-        } else if (request.getParameter(NAME) != null) {
-            session.setAttribute(request);
-            return getMessageFormatted(session, request);
-        }
-        return HELLO;
-    }
+//    private String getMessage(HttpServletRequest request, HttpServletResponse response) {
+//        if (request.getParameter(NAME) == null && session.getAttribute(request) != null) {
+//            return getMessageFormatted(session, request);
+//        } else if (request.getParameter(NAME) != null) {
+//            session.setAttribute(request, response);
+//            return getMessageFormatted(session, request);
+//        }
+//        return HELLO;
+//    }
 
     private static String getMessageFormatted(CustomSession session, HttpServletRequest req) {
         return """
-                %s %s !""".formatted(HELLO, session.getAttribute(req));
+                %s%s!""".formatted(HELLO, (session.getAttribute(req) == null ? "" : " " + session.getAttribute(req)));
     }
 }
