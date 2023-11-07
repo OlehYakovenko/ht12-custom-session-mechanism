@@ -5,7 +5,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -14,7 +13,7 @@ public class CustomSession {
     private final Map<String, Session> sessionStore = new ConcurrentHashMap<>();
 
     public Session createOrGetSession(HttpServletRequest request, HttpServletResponse response) {
-        if (Objects.requireNonNull(getSessionId(request)).isEmpty()) {
+        if (getSessionId(request) == null) {
             var session = createCustomSession(request);
             response.addCookie(new Cookie(Session.SESSION_ID, session.getSessionId()));
             return session;
@@ -39,20 +38,23 @@ public class CustomSession {
 
     private static String getSessionId(HttpServletRequest request) {
         var cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals(Session.SESSION_ID)) {
-                return cookie.getValue();
+        if(cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals(Session.SESSION_ID)) {
+                    return cookie.getValue();
+                }
             }
         }
         return null;
     }
 
-
     private Session createCustomSession(HttpServletRequest request) {
         var sessionId = UUID.randomUUID().toString();
         String userName = null;
-        if (!request.getParameter("name").isEmpty()) {
-            userName = request.getParameter("name");
+        if (request.getParameter("name") != null) {
+            if (!request.getParameter("name").isEmpty()) {
+                userName = request.getParameter("name");
+            }
         }
         var session = new Session(sessionId, userName);
         sessionStore.put(sessionId, session);
