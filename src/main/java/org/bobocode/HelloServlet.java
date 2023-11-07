@@ -1,16 +1,15 @@
 package org.bobocode;
 
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.*;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Arrays;
 
 @WebServlet(value = "/hello")
 public class HelloServlet extends HttpServlet {
+    private final CustomSession session = new CustomSession();
     private static final String NAME = "name";
     private static final String HELLO = "Hello";
 
@@ -22,18 +21,17 @@ public class HelloServlet extends HttpServlet {
     }
 
     private String getMessage(HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        if (request.getParameter(NAME) == null && session.getAttribute(NAME) != null) {
-            return getMessageFormatted(session);
+        if (request.getParameter(NAME) == null && session.getAttribute(request) != null) {
+            return getMessageFormatted(session, request);
         } else if (request.getParameter(NAME) != null) {
-            session.setAttribute(NAME, request.getParameter(NAME));
-            return getMessageFormatted(session);
+            session.setAttribute(request);
+            return getMessageFormatted(session, request);
         }
         return HELLO;
     }
 
-    private static String getMessageFormatted(HttpSession session) {
+    private static String getMessageFormatted(CustomSession session, HttpServletRequest req) {
         return """
-                %s %s!""".formatted(HELLO, session.getAttribute(NAME));
+                %s %s !""".formatted(HELLO, session.getAttribute(req));
     }
 }
